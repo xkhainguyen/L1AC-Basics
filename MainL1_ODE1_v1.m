@@ -1,3 +1,4 @@
+% Only adaptive law are sampled with Ts
 clc
 close all;
 clear all;

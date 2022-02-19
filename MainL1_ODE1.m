@@ -1,3 +1,4 @@
+% All other-than-plant calculations are sampled with Ts
 clc
 close all;
 clear all;

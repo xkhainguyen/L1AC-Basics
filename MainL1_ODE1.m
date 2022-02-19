@@ -3,14 +3,16 @@ clc
 close all;
 clear all;
 
-params.dt = 0.0001; params.Ts = 0.01; 
-Tf = 0.5;
+params.dt = 0.0001; % plant interval
+params.Ts = 0.01;   % adaptive sampling time
+Tf = 0.2;           % simulation time
 t = 0:params.dt:Tf;
 ts = 0:params.Ts:Tf;
 
-params.a = 1; params.am = params.a; params.b = params.a;
+params.a = 1; params.am = params.a; params.b = params.a;    % system matrix
 params.kr = params.am/params.b; params.r = 0;
 
+% Initialization
 u = zeros(1, length(ts));
 x = zeros(1, length(t));
 dx = zeros(1, length(t));
@@ -24,6 +26,7 @@ x(1) = 0; x_hat(1) = 0;
 global u_prev
 u_prev = 0;
 
+% Piecewise-Constant Adaptive Laws Setting
 params.Phi_Ts = (1 - exp(-params.am*params.Ts))/params.am;
 params.tau = 0.1;
 
@@ -64,7 +67,8 @@ plot(ts,u); title('u control');
 figure
 plot(ts,x_tilde); title('x^~');
 %%
-plot(ts,u);hold on;stairs(ts,sigma_hat);
+figure
+plot(ts,u);hold on;stairs(ts,sigma_hat); title('Filter');
 %%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  

@@ -29,24 +29,22 @@ u_prev = 0;
 params.Phi_Ts = (1 - exp(-params.am*params.Ts))/params.am;
 params.tau = 0.1;
 
-j = 1;
+j = 0;
 
 for i=1:length(t)   % Real time
-    if (~mod(i-1,round(params.Ts/params.dt)))&&(i>0) %Sampling
+    if (~mod(i-1,round(params.Ts/params.dt))) %Sampling
+        j = j + 1;
         x_tilde(j) = x_hat(j) - x(i);
-
+        
         sigma_hat(j) = estimator(x_tilde(j), params); % Adaptive Law
 
-        if(j>0) 
-            u(j) = controller(sigma_hat(j), params);   % Controller + Filter
-        end
+        u(j) = controller(sigma_hat(j), params);   % Controller + Filter
         
         if (j == length(ts))    % last time
             [~, dx_hat(j)] = predictor(x_hat(j), u(j), sigma_hat(j), params);    % Predicted system          
         else        
             [x_hat(j+1), dx_hat(j)] = predictor(x_hat(j), u(j), sigma_hat(j), params);    % Predicted system
             % Predictor uses different sampling time then x_tilde varies 
-            j = j + 1;
         end
            
     end   
@@ -54,7 +52,7 @@ for i=1:length(t)   % Real time
     if (i == length(t)) % last time
         [~, dx(i), d(i)] = plant(x(i), u(j), t(i), params);    % Real system
     else
-        [x(i+1), dx(i), d(i)] = plant(x(i), u(j-1), t(i), params);    % Real system
+        [x(i+1), dx(i), d(i)] = plant(x(i), u(j), t(i), params);    % Real system
     end
 end
 
